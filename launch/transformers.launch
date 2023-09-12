@@ -1,0 +1,23 @@
+<launch>
+    <!-- Start the odometry transformer node -->
+    <node name="odometry_transformer_node" pkg="unity_ros_tf" type="odometry_transformer.py" output="screen">
+        <param name="child_frame" value="child_frame" />
+        <param name="parent_frame" value="parent_frame" />
+        <param name="pose_offset_method" value="tf" />
+        <param name="pose_topic" value="/pose_topic" />
+        <param name="position_offset" value="[0.0, 0.0, 0.0]" />
+        <param name="rotation_format" value="euler" />  <!-- Options: 'euler' or 'quaternion' -->
+        <param name="rotation_offset" value="[0.0, 0.0, 0.0]" />  <!-- Euler angles by default -->
+    </node>
+
+    <!-- Start the occupancy grid transformer node -->
+    <node name="occupancy_grid_transformer_node" pkg="unity_ros_tf" type="occupancy_grid_transformer.py" output="screen">
+        <param name="parent_frame" value="parent_frame" />
+        <param name="child_frame" value="child_frame" />
+        <param name="map_origin_offset" value="[0.0, 0.0, 0.0]" />
+        <param name="odom_topic" value="/odom" />
+        <param name="trigger_topic" value="/trigger" />
+        <param name="input_map_topic" value="/input_map" />
+        <param name="output_map_topic" value="/output_map" />
+    </node>
+</launch>

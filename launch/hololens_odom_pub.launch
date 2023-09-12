@@ -1,0 +1,15 @@
+<launch>
+
+<node pkg="unity_ros_tf" type="odomfromtf.py" name="dog_odom_from_TF">
+    <remap from="/odom_to_map" to="/dog_to_world"/>
+    <param name="parent_frame" value="multijackal_01/map" />
+    <param name="child_frame" value="multijackal_01/odom" />
+</node>
+
+<node pkg="unity_ros_tf" type="odomfromtf.py" name="dog_map_from_TF">
+    <remap from="/odom_to_map" to="/dogmap_to_world"/>
+    <param name="parent_frame" value="multijackal_01/map" />
+    <param name="child_frame" value="multijackal_01/map" />
+</node>
+
+</launch>
