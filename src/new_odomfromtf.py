@@ -2,7 +2,6 @@
 
 import rospy
 import std_msgs
-from std_msgs.msg import Bool 
 import geometry_msgs
 import nav_msgs
 from nav_msgs.msg import Odometry
@@ -18,7 +17,7 @@ def done_climbing_stair():
         
         for _ in range(num_messages_to_collect):
             try:
-                trans_floor = tfBuffer.lookup_transform(parent_frame, child_frame, rospy.Time())
+                trans_floor = tfBuffer.lookup_transform("global_frame", "multijackal_02/base_footprint", rospy.Time())
                 collected_transforms.append(trans_floor.transform.translation.z)
             except tf2.LookupException as e:
                 rospy.logwarn("Robot Transform lookup for Floor offset failed: {}".format(e))
@@ -72,9 +71,9 @@ if __name__ == "__main__":
     listener = tf2_ros.TransformListener(tfBuffer)
 
     rate = rospy.Rate(10.0)
-    odom_pub = rospy.Publisher("global_odom",Odometry, queue_size=50)  
+    odom_pub = rospy.Publisher("odom_to_map",Odometry, queue_size=50)  
 
-    rospy.Subscriber("is_climbing",Bool,check_climbing_history)
+    rospy.Subscriber("/is_climbing",Bool,check_climbing_history)
     new_floor_reached = False
     floor_reached_timer = None
 
