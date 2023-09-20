@@ -1,8 +1,8 @@
 <launch>
     <!-- Start the odometry transformer node -->
     <node name="odometry_transformer_node" pkg="unity_ros_tf" type="odometry_transformer2.py" output="screen">
-        <param name="child_frame" value="joey1/wheel1" />
-        <param name="parent_frame" value="joey1/base_link" />
+        <param name="parent_frame" value="multijackal_02/odom" /> <!--map-->>
+        <param name="child_frame" value="multijackal_02/base_footprint" />        
         <param name="position_offset" value="[0.0, 0.0, 0.0] " />
         <param name="euler_rotation_offset" value="[0.0, 0.0, 0.0]" />
         <remap from="/original_odom" to="/multijackal_02/odom"/>

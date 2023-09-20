@@ -19,12 +19,12 @@ def done_climbing_stair():
         for _ in range(num_messages_to_collect):
             try:
                 trans_floor = tfBuffer.lookup_transform(parent_frame, child_frame, rospy.Time())
-                collected_transforms.append(trans_floor.transform.translation.z)
+                collected_transforms.append(trans_floor.transform.translation.x) #must be .z but change to .y to debug
             except tf2.LookupException as e:
                 rospy.logwarn("Robot Transform lookup for Floor offset failed: {}".format(e))
             rate2.sleep()
 
-        if collected_transforms:
+        if len(collected_transforms)==num_messages_to_collect:
             z_offset_floor = sum(collected_transforms) / len(collected_transforms)
             print("Successfully determined floor height = " + z_offset_floor)
 
@@ -41,6 +41,7 @@ def check_climbing_history(booldata):
     if are_arrays_equal(bool_history, gold_standard_history):
         if not new_floor_reached:
             new_floor_reached = True
+            rospy.logdebug("new_floor_reached is TRUE!!!!")
             floor_reached_timer = rospy.Time.now()
 
 def are_arrays_equal(arr1, arr2):
@@ -58,6 +59,7 @@ def check_floor_reached_thread():
     while not rospy.is_shutdown():
         if new_floor_reached and rospy.Time.now() - floor_reached_timer > rospy.Duration(600):  # 10 minutes = 600 seconds
             new_floor_reached = False
+            rospy.logwarn("new_floor_reached status is reset")
         rospy.sleep(1)  # Sleep for 1 second to reduce CPU usage
 
 if __name__ == "__main__":
@@ -73,6 +75,7 @@ if __name__ == "__main__":
 
     rate = rospy.Rate(10.0)
     odom_pub = rospy.Publisher("global_odom",Odometry, queue_size=50)  
+    trans = Odometry()
 
     rospy.Subscriber("is_climbing",Bool,check_climbing_history)
     new_floor_reached = False
