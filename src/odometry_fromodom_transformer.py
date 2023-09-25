@@ -18,7 +18,7 @@ def update_odom_callback(message):
 
     # Copy the original odom
     updated_odom = original_odom
-
+    updated_odom.header.frame_id = tf_transform.header.frame_id
 
     # Add transform from the global frame (ros origin) to the original odom
     updated_odom.pose.pose.position.x += tf_transform.transform.translation.x
@@ -104,7 +104,7 @@ if __name__ == "__main__":
 
     print(manual_position_offset)
 
-    tf_transform = Transform()
+    tf_transform = TransformStamped()
     tfBuffer = tf2_ros.Buffer()
     listener = tf2_ros.TransformListener(tfBuffer)
 
@@ -125,7 +125,7 @@ if __name__ == "__main__":
         updated_odom = Odometry() 
         try:
             tf_transform = tfBuffer.lookup_transform(parent_frame, child_frame, rospy.Time())
-            updated_odom.header.frame_id = tf_transform.header.frame_id
+            
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             # rate.sleep()
             continue

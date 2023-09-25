@@ -13,13 +13,13 @@ def map_callback(msg):
 
     # Copy the original map
     updated_map = original_map
-    
+    updated_map.header.frame_id = tf_transform.header.frame_id
 
     # Add transform from the global frame (ros origin) to the original map origin
     updated_map.info.origin.position.x += tf_transform.transform.translation.x
     updated_map.info.origin.position.y += tf_transform.transform.translation.y
     updated_map.info.origin.position.z += tf_transform.transform.translation.z
-    quaternion_combined = tf.transformations.quaternion_multiply(updated_map.info.origin.orientation, tf_transform.transform.rotation)
+    quaternion_combined = tf.transformations.quaternion_multiply([updated_map.info.origin.orientation.x,updated_map.info.origin.orientation.y,updated_map.info.origin.orientation.z,updated_map.info.origin.orientation.w], [tf_transform.transform.rotation.x,tf_transform.transform.rotation.y,tf_transform.transform.rotation.z,tf_transform.transform.rotation.w])
     updated_map.info.origin.orientation.x = quaternion_combined[0]
     updated_map.info.origin.orientation.y = quaternion_combined[1]
     updated_map.info.origin.orientation.z = quaternion_combined[2]
@@ -33,7 +33,7 @@ def map_callback(msg):
     updated_map.info.origin.position.y += manual_position_offset[1]
     updated_map.info.origin.position.z += manual_position_offset[2]
     manual_offset_quaternion = tf.transformations.quaternion_from_euler(manual_orientation_offset[0], manual_orientation_offset[1], manual_orientation_offset[2])
-    quaternion_combined = tf.transformations.quaternion_multiply(updated_map.info.origin.orientation, manual_offset_quaternion)
+    quaternion_combined = tf.transformations.quaternion_multiply([updated_map.info.origin.orientation.x,updated_map.info.origin.orientation.y,updated_map.info.origin.orientation.z,updated_map.info.origin.orientation.w], manual_offset_quaternion)
     updated_map.info.origin.orientation.x = quaternion_combined[0]
     updated_map.info.origin.orientation.y = quaternion_combined[1]
     updated_map.info.origin.orientation.z = quaternion_combined[2]
@@ -45,7 +45,7 @@ def map_callback(msg):
         updated_map.info.origin.position.x += human_localization_pose.pose.pose.position.x
         updated_map.info.origin.position.y += human_localization_pose.pose.pose.position.y
         updated_map.info.origin.position.z += human_localization_pose.pose.pose.position.z
-        quaternion_combined = tf.transformations.quaternion_multiply(updated_map.info.origin.orientation, human_localization_pose.pose.pose.orientation)
+        quaternion_combined = tf.transformations.quaternion_multiply([updated_map.info.origin.orientation.x,updated_map.info.origin.orientation.y,updated_map.info.origin.orientation.z,updated_map.info.origin.orientation.w], [human_localization_pose.pose.pose.orientation.x,human_localization_pose.pose.pose.orientation.y,human_localization_pose.pose.pose.orientation.z,human_localization_pose.pose.pose.orientation.w])
         updated_map.info.origin.orientation.x = quaternion_combined[0]
         updated_map.info.origin.orientation.y = quaternion_combined[1]
         updated_map.info.origin.orientation.z = quaternion_combined[2]
@@ -54,7 +54,7 @@ def map_callback(msg):
         # Add human height (only z height) 
         updated_map.info.origin.position.z += z_offset_human 
 
-    update_map_origin(tf_transform)
+    # update_map_origin(tf_transform)
 
     map_pub.publish(updated_map)
 
@@ -83,7 +83,7 @@ if __name__ == "__main__":
     manual_position_offset = rospy.get_param('~manual_position_offset', [0.0, 0.0, 0.0])
     manual_orientation_offset = rospy.get_param('~manual_orientation_offset', [0.0, 0.0, 0.0])
 
-    tf_transform = Transform()
+    tf_transform = TransformStamped()
     tfBuffer = tf2_ros.Buffer()
     listener = tf2_ros.TransformListener(tfBuffer)
 
@@ -104,7 +104,7 @@ if __name__ == "__main__":
         updated_map = OccupancyGrid()    
         try:
             tf_transform = tfBuffer.lookup_transform(parent_frame,child_frame,rospy.Time())
-            updated_map.header.frame_id = tf_transform.header.frame_id
+            
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             rate.sleep()
             continue

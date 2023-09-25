@@ -17,6 +17,10 @@
   ```sh
   rosrun rqt_tf_tree rqt_tf_tree
   ```
+* Simulate boolean message
+  ```sh
+  rostopic pub -r 10 /is_localized std_msgs/Bool "data: True"
+  ```
 * ros terminal
   ```sh
   roslaunch unity_ros_tf transformers.launch
