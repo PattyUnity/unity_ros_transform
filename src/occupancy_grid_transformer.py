@@ -72,7 +72,7 @@ def is_localized_callback(msg):
 
 def stop_human_localization_subscriber(event):
     global human_localization_subscriber
-    human_localization_subscriber.unregister()
+    # human_localization_subscriber.unregister()
 
 if __name__ == "__main__":
     rospy.init_node('occupancygrid_transformer')

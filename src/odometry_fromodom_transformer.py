@@ -82,7 +82,7 @@ def is_localized_callback(msg):
 
 def stop_human_localization_subscriber(event):
     global human_localization_subscriber
-    human_localization_subscriber.unregister()
+    # human_localization_subscriber.unregister()
 
 def get_quaternion_in_tuples(msg,case_transform):
     if case_transform:

@@ -1,6 +1,10 @@
 # unity_ros_transform
 
 ### Getting started
+* Running rosbag normally in loop
+  ```sh
+  rosbag play -l multijackal_02_hololens_distributed.bag 
+  ```
 * If running data from a bag file and the tf topics are not the default ones, remap the topic names
   ```sh
   rosbag play -l <rosbag.bag> /merged_desktop/tf:=/tf /merged_desktop/tf_static:=/tf_static
@@ -17,9 +21,21 @@
   ```sh
   rosrun rqt_tf_tree rqt_tf_tree
   ```
+  or inspecting tf tree on non-standard tf topics
+  ```sh
+  rosrun rqt_tf_tree rqt_tf_tree /tf:=/multijackal_02/merged/tf /tf_static:=/multijackal_02/merged/tf_static
+  ```
 * Simulate boolean message
   ```sh
   rostopic pub -r 10 /is_localized std_msgs/Bool "data: True"
+  ```
+* Simulate odom message
+  ```sh
+  rostopic pub -r 10 /human_localization_odom nav_msgs/Odometry "{header: {stamp: now, frame_id: 'odom'}, child_frame_id: 'base_link', pose: {pose: {position: {x: 0.0, y: 0.0, z: 0.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}}}}"
+  ```
+  With yaw rotation 90 degree
+  ```sh
+  rostopic pub -r 10 /human_localization_odom nav_msgs/Odometry "{header: {stamp: now, frame_id: 'odom'}, child_frame_id: 'base_link', pose: {pose: {position: {x: 0.0, y: 0.0, z: 0.0}, orientation: {x: 0.0, y: 0.0, z: 0.707, w: 0.707}}}}"
   ```
 * ros terminal
   ```sh
@@ -33,6 +49,23 @@
   git add .
   git commit -m "Comment"
   git push -f origin main
+  ```
+
+  * Set up ros multimaster 
+  1. add multirosmaster.sh
+  ```sh
+  #!/bin/bash
+
+  rosrun fkie_master_discovery master_discovery _mcast_group:=224.0.0.1 _robot_hosts:=[192.168.1.82,192.168.1.92] & rosrun fkie_master_sync master_sync && fg
+  ```
+  2. sudo nano /etc/hosts and add ip addresses and hostnames of dog1 and dog2
+  3. To run multimaster, cd into where multirosmaster.sh is 
+  ```sh
+  ./multirosmaster.sh
+  ```
+* Copy files from host machine to vm. Go to the folder containing the file:
+  ```sh
+  scp bagfromorigin.bag vmname@vmip:/home/user/Downloads/
   ```
   
 

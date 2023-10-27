@@ -30,7 +30,7 @@
         <remap from="/global_odom" to="/global/multijackal_01/odom"/> 
         <remap from="/is_localized" to="/is_localized"/> 
         <remap from="/human_localization_odom" to="/human_localization_odom"/>     
-        <rosparam param="manual_position_offset">[-2.0,0.0,0.0]</rosparam>
+        <rosparam param="manual_position_offset">[0.0,0.0,0.0]</rosparam>
         <rosparam param="manual_orientation_offset">[0.0,0.0,0.0]</rosparam>    
         <remap from="/tf" to="/multijackal_02/merged/tf"/> 
         <remap from="/tf_static" to="/multijackal_02/merged/tf_static"/>          
@@ -69,7 +69,7 @@
         <remap from="/global/map" to="/global/multijackal_01/map"/> 
         <remap from="/is_localized" to="/is_localized"/> 
         <remap from="/human_localization_odom" to="/human_localization_odom"/> 
-        <rosparam param="manual_position_offset">[-2.0,0.0,0.0]</rosparam>
+        <rosparam param="manual_position_offset">[0.0,0.0,0.0]</rosparam>
         <rosparam param="manual_orientation_offset">[0.0,0.0,0.0]</rosparam>       
         <remap from="/tf" to="/multijackal_02/merged/tf"/> 
         <remap from="/tf_static" to="/multijackal_02/merged/tf_static"/>            
