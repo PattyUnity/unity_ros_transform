@@ -12,15 +12,12 @@ import tf2_ros
 import threading
 import numpy as np
 
-tf_transform = None
+# tf_transform = None
 
 def update_odom_callback(message):
     global odom_pub, original_odom, tf_transform, updated_odom, z_offset_floor, manual_position_offset, manual_orientation_offset,human_localization_pose,z_offset_human, is_localized
-    
-    if tf_transform is None:
-        return
-
     original_odom = message
+
     # # Convert transform from tf into rotation matrix
     # rot = [tf_transform.transform.rotation.x, tf_transform.transform.rotation.y, tf_transform.transform.rotation.z, tf_transform.transform.rotation.w]
     # map_to_pose_tf = tf.transformations.quaternion_matrix(rot)
@@ -33,7 +30,7 @@ def update_odom_callback(message):
 
     # Copy the original odom
     # updated_odom = original_odom
-    # updated_odom.header.frame_id = tf_transform.header.frame_id
+    updated_odom.header.frame_id = tf_transform.header.frame_id
     # Convert pose of the object into rotation matrix
     pose_local_tf = tf.transformations.quaternion_matrix([original_odom.pose.pose.orientation.x,original_odom.pose.pose.orientation.y, original_odom.pose.pose.orientation.z, original_odom.pose.pose.orientation.w])
     pose_local_tf[0:3,-1] = [original_odom.pose.pose.position.x, original_odom.pose.pose.position.y, original_odom.pose.pose.position.z]
@@ -133,29 +130,35 @@ if __name__ == "__main__":
     manual_orientation_offset = rospy.get_param('~manual_orientation_offset', [0.0, 0.0, 0.0])
     # manual_position_offset = [float(manual_position_offset_in[0])]
     # manual_orientation_offset = tuple(manual_orientation_offset)
-    
+    #global tf_transform
+    print(manual_position_offset)
+
+    tf_transform = Transform()
+    # tf_transform = TransformStamped()
+    # tfBuffer = tf2_ros.Buffer()
+    # listener = tf2_ros.TransformListener(tfBuffer)
     tf_listener = tf.TransformListener()
 
-    rate = rospy.Rate(1.0)
+    rate = rospy.Rate(10.0)
     odom_pub = rospy.Publisher("global_odom",Odometry, queue_size=50)     
     
 
     original_odom = Odometry()
     rospy.Subscriber("odom", Odometry, update_odom_callback)
 
-    # is_localized = False
-    # human_localization_pose = Odometry()
-    # rospy.Subscriber("/is_localized", Bool, is_localized_callback)
-    # human_localization_subscriber = rospy.Subscriber("/human_localization_odom", Odometry, human_localization_callback)
+    is_localized = False
+    human_localization_pose = Odometry()
+    rospy.Subscriber("/is_localized", Bool, is_localized_callback)
+    human_localization_subscriber = rospy.Subscriber("/human_localization_odom", Odometry, human_localization_callback)
 
 
     while not rospy.is_shutdown():
         updated_odom = Odometry() 
         try:
-            tf_transform = tf_listener.lookupTransform(parent_frame, child_frame, rospy.Time(0))
+            tf_transform =tf_listener.lookupTransform(parent_frame, child_frame, rospy.Time(0))
             # tf_transform = tfBuffer.lookup_transform(parent_frame, child_frame, rospy.Time(0))
             # tf_transform2 = listener.lookupTransform(parent_frame, child_frame, rospy.Time(0))
-            # print(parent_frame, child_frame, tf_transform)
+            print(parent_frame, child_frame, type(tf_transform))
             
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
             # rate.sleep()
@@ -164,6 +167,6 @@ if __name__ == "__main__":
 
          
 
-        rate.sleep()
+        rate.sleep
 
 

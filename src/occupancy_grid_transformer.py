@@ -103,10 +103,11 @@ if __name__ == "__main__":
     while not rospy.is_shutdown():
         updated_map = OccupancyGrid()    
         try:
-            tf_transform = tfBuffer.lookup_transform(parent_frame,child_frame,rospy.Time())
+            tf_transform = tfBuffer.lookup_transform(parent_frame,child_frame,rospy.Time(0))
             
-        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            rate.sleep()
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
+            # rate.sleep()
+            print(e)
             continue
 
         
