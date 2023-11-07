@@ -1,4 +1,24 @@
 <launch>
+    <!-- Start the object detection transformer node -->
+    <node name="object_detection_toglobal" pkg="unity_ros_tf" type="objectdetection_transformer.py" output="screen">
+        <param name="parent_frame"  value="multijackal_02/map" /> 
+        <param name="child_frame" value="multijackal_02/map" /> 
+        <remap from="/local_objDetection" to="/multijackal_02/human_detection"/> 
+        <remap from="/global_objDetection" to="/global/human_detection"/>      
+        <remap from="/tf" to="/multijackal_01/merged/tf"/> 
+        <remap from="/tf_static" to="/multijackal_01/merged/tf_static"/>          
+    </node>    
+
+    <!-- Start the pose stamped transformer node -->
+    <node name="aruco_posestamped_nightray_toglobal" pkg="unity_ros_tf" type="posestamped_transformer.py" output="screen">
+        <param name="parent_frame"  value="multijackal_02/map" /> 
+        <param name="child_frame" value="multijackal_02/map" /> 
+        <remap from="/local_topic" to="/multijackal_02/viz_panel_pose"/> 
+        <remap from="/global_topic" to="/global/viz_panel_pose"/>      
+        <remap from="/tf" to="/multijackal_01/merged/tf"/> 
+        <remap from="/tf_static" to="/multijackal_01/merged/tf_static"/>          
+    </node>    
+
     <!-- Start the odometry transformer node -->
     <!--parent_frame                : the global map origin with static zeros-->
     <!--child_frame                 : check the frame_id of the odom message-->
@@ -8,7 +28,7 @@
     <!--/human_localization_odom    :HL2 publish relative transfrom from QR code to HL camera-->  
     <!-- <param name="parent_frame"  value="multijackal_09/map" />  -->
 
-    <node name="odometry_transformer_robot_1_toglobal" pkg="unity_ros_tf" type="odometry_fromodom_transformer.py" output="screen">
+    <!-- <node name="odometry_transformer_robot_1_toglobal" pkg="unity_ros_tf" type="odometry_fromodom_transformer.py" output="screen">
         <param name="parent_frame"  value="map" /> 
         <param name="child_frame" value="multijackal_01/odom" /> 
         <param name="z_offset_human" value="0.0" />
@@ -37,7 +57,7 @@
         <rosparam param="manual_orientation_offset">[0.0,0.0,0.0]</rosparam>  
         <remap from="/tf" to="/multijackal_01/merged/tf"/> 
         <remap from="/tf_static" to="/multijackal_01/merged/tf_static"/>       
-    </node>
+    </node> -->
 
 
 
