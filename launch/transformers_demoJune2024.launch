@@ -1,0 +1,149 @@
+<launch>
+
+
+    <node name="toglobal_lowobstacle" pkg="unity_ros_tf" type="posestamped_transformer.py" output="screen">
+        <param name="parent_frame"  value="multijackal_02/map" /> 
+        <param name="child_frame" value="multijackal_02/map" /> 
+        <remap from="/local_topic" to="/multijackal_02/low_obstacle_pose"/> 
+        <remap from="/global_topic" to="/global/low_obstacle_pose"/>      
+        <remap from="/tf" to="/multijackal_01/merged/tf"/> 
+        <remap from="/tf_static" to="/multijackal_01/merged/tf_static"/>          
+    </node>    
+
+    <!-- Start the odometry transformer node -->
+    <!--parent_frame                : the global map origin with static zeros-->
+    <!--child_frame                 : check the frame_id of the odom message-->
+    <!--/odom                       : input - name of original -->
+    <!--/global_odom                : output - name of modified -->
+    <!--/is_localized               : When HL2 detect and send QR code transform to localize-->
+    <!--/human_localization_odom    :HL2 publish relative transfrom from QR code to HL camera-->  
+    <!-- <param name="parent_frame"  value="multijackal_09/map" />  -->
+
+
+
+    <node name="toglobal_odometry_transformer_robot_2" pkg="unity_ros_tf" type="odometry_fromodom_transformer.py" output="screen">
+        <param name="parent_frame"  value="multijackal_02/map" /> 
+        <param name="child_frame" value="multijackal_02/odom" /> 
+        <param name="z_offset_human" value="0.0" />
+        <param name="z_offset_floor" value="0.0" />
+        <remap from="/odom" to="/multijackal_02/odom"/> 
+        <remap from="/global_odom" to="/global/multijackal_02/odom"/> 
+        <remap from="/is_localized" to="/is_localized"/> 
+        <remap from="/human_localization_odom" to="/human_localization_odom"/>     
+        <rosparam param="manual_position_offset">[0.0,0.0,0.0]</rosparam>
+        <rosparam param="manual_orientation_offset">[0.0,0.0,0.0]</rosparam>  
+        <remap from="/tf" to="/multijackal_01/merged/tf"/> 
+        <remap from="/tf_static" to="/multijackal_01/merged/tf_static"/>       
+    </node>
+
+    <node pkg="unity_ros_tf" type="odomfromtf.py" name="toglobal_joey1odom" output="screen">
+        <remap from="/odom_to_map" to="/global/joey1_odom"/>
+        <param name="parent_frame" value="map" />
+        <param name="child_frame" value="joey1/base_footprint" />
+        <remap from="/tf" to="/multijackal_01/merged/tf"/> 
+        <remap from="/tf_static" to="/multijackal_01/merged/tf_static"/>    
+    </node>
+
+    <!-- <node name="toglobal_joey1odom" pkg="unity_ros_tf" type="odometry_fromodom_transformer.py" output="screen">
+        <param name="parent_frame"  value="map" /> 
+        <param name="child_frame" value="joey1/base_footprint" /> 
+        <param name="z_offset_human" value="0.0" />
+        <param name="z_offset_floor" value="0.0" />
+        <remap from="/odom" to="/joey_dummy"/> 
+        <remap from="/global_odom" to="/global/joey1_odom"/> 
+        <remap from="/is_localized" to="/is_localized"/> 
+        <remap from="/human_localization_odom" to="/human_localization_odom"/>     
+        <rosparam param="manual_position_offset">[0.0,0.0,0.0]</rosparam>
+        <rosparam param="manual_orientation_offset">[0.0,0.0,0.0]</rosparam>  
+        <remap from="/tf" to="/multijackal_01/merged/tf"/> 
+        <remap from="/tf_static" to="/multijackal_01/merged/tf_static"/>       
+    </node> -->
+
+
+
+        <!-- <param name="rosconsole_format" value="[${severity}] [${time}]: ${message}" />
+        <param name="rosconsole_level" value="debug" /> -->
+
+    <!-- Start the occupancy grid transformer node -->
+    <!--child_frame                 : check the frame_id of the occupancy message-->
+    <!--/robot/map                  : input - name of original map-->
+    <!--/global/map                 : output - name of modified map-->
+    <!--/is_localized               : When HL2 detect and send QR code transform to localize-->
+    <!--/human_localization_odom    :HL2 publish relative transfrom from QR code to HL camera-->        
+
+    <!-- <node name="mj01_mergedmap_to_mj09" pkg="unity_ros_tf" type="occupancy_grid_transformer.py" output="screen">
+        <param name="parent_frame" value="map" /> 
+        <param name="child_frame" value="multijackal_01/merged_map" /> 
+        <param name="z_offset_human" value="0.0" />
+        <param name="z_offset_floor" value="0.0" />
+        <remap from="/robot/map" to="multijackal_01/merged_map"/> 
+        <remap from="/global/map" to="/global/multijackal_01/merged_map"/> 
+        <remap from="/is_localized" to="/is_localized"/> 
+        <remap from="/human_localization_odom" to="/human_localization_odom"/> 
+        <rosparam param="manual_position_offset">[0.0,0.0,0.0]</rosparam>
+        <rosparam param="manual_orientation_offset">[0.0,0.0,0.0]</rosparam>     
+        <remap from="/tf" to="/multijackal_01/merged/tf"/> 
+        <remap from="/tf_static" to="/multijackal_01/merged/tf_static"/>              
+    </node> -->
+
+    <!-- <node name="occupancy_map_robot2" pkg="unity_ros_tf" type="occupancy_grid_transformer.py" output="screen">
+        <param name="parent_frame" value="map" /> 
+        <param name="child_frame" value="multijackal_02/merged_map" /> 
+        <param name="z_offset_human" value="0.0" />
+        <param name="z_offset_floor" value="0.0" />
+        <remap from="/robot/map" to="/multijackal_02/map"/> 
+        <remap from="/global/map" to="/global/multijackal_02/map"/> 
+        <remap from="/is_localized" to="/is_localized"/> 
+        <remap from="/human_localization_odom" to="/human_localization_odom"/> 
+        <rosparam param="manual_position_offset">[0.0,0.0,0.0]</rosparam>
+        <rosparam param="manual_orientation_offset">[0.0,0.0,0.0]</rosparam>     
+        <remap from="/tf" to="/multijackal_01/merged/tf"/> 
+        <remap from="/tf_static" to="/multijackal_01/merged/tf_static"/>              
+    </node> -->
+
+    <!-- <node name="occupancy_map_robot1" pkg="unity_ros_tf" type="occupancy_grid_transformer.py" output="screen">
+        <param name="parent_frame" value="map" /> 
+        <param name="child_frame" value="multijackal_01/map" /> 
+        <param name="z_offset_human" value="0.0" />
+        <param name="z_offset_floor" value="0.0" />
+        <remap from="/robot/map" to="/multijackal_01/map"/> 
+        <remap from="/global/map" to="/global/multijackal_01/map"/> 
+        <remap from="/is_localized" to="/is_localized"/> 
+        <remap from="/human_localization_odom" to="/human_localization_odom"/> 
+        <rosparam param="manual_position_offset">[0.0,0.0,0.0]</rosparam>
+        <rosparam param="manual_orientation_offset">[0.0,0.0,0.0]</rosparam>       
+        <remap from="/tf" to="/multijackal_02/merged/tf"/> 
+        <remap from="/tf_static" to="/multijackal_02/merged/tf_static"/>            
+    </node> -->
+
+    <!-- <node name="odometry_transformer_robot_1_toglobal" pkg="unity_ros_tf" type="odomfromtf.py" output="screen">
+        <param name="parent_frame"  value="map" />
+        <param name="child_frame" value="multijackal_02/odom" />
+        <param name="z_offset_human" value="0.0" />
+        <param name="z_offset_floor" value="0.0" />
+        <remap from="/odom" to="/multijackal_02/odom"/>
+        <remap from="/global_odom" to="/global/test"/>
+        <param name="rosconsole_format" value="[${severity}] [${time}]: ${message}" />
+        <param name="rosconsole_level" value="debug" />
+    </node> -->
+
+    <!-- <node name="odometry_transformer_robot_2_toglobal" pkg="unity_ros_tf" type="odometry_transformer.py" output="screen">
+        <param name="parent_frame"  value="map" />
+        <param name="child_frame" value="multijackal_02/odom" />
+        <param name="z_offset_human" value="0.0" />
+        <param name="z_offset_floor" value="0.0" />
+        <remap from="/global_odom" to="/global/test"/>
+        <param name="rosconsole_format" value="[${severity}] [${time}]: ${message}" />
+        <param name="rosconsole_level" value="debug" />
+    </node> -->
+
+    <!-- Start the occupancy grid transformer node
+    <node name="occupancy_grid_transformer_node" pkg="unity_ros_tf" type="occupancy_grid_transformer.py" output="screen">
+        <param name="parent_frame" value="map" />
+        <param name="child_frame" value="multijackal_01/map" />
+        <param name="origin_position_offset" value="[0.0, 0.0, 0.0]" />
+        <param name="origin_orientation_offset" value="[0.0, 0.0, 0.0]" />
+        <remap from="/robot_map" to="/multijackal_01/map"/> #name of original map
+        <remap from="/global_map" to="/global/multijackal_01/map"/> #name of modified map
+    </node> -->
+</launch>
