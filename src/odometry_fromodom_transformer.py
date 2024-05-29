@@ -159,7 +159,7 @@ if __name__ == "__main__":
             
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
             # rate.sleep()
-            print(e)
+            # print(e)
             continue
 
          

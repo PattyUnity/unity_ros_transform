@@ -1,7 +1,7 @@
 <launch>
     <!-- Start the object detection transformer node -->
-    <node name="object_detection_toglobal" pkg="unity_ros_tf" type="objectdetection_transformer.py" output="screen">
-        <param name="parent_frame"  value="multijackal_02/map" /> 
+    <node name="toglobal_object_detection" pkg="unity_ros_tf" type="objectdetection_transformer.py" output="screen">
+        <param name="parent_frame"  value="map" /> 
         <param name="child_frame" value="multijackal_02/map" /> 
         <remap from="/local_objDetection" to="/multijackal_02/human_detection"/> 
         <remap from="/global_objDetection" to="/global/human_detection"/>      
@@ -10,11 +10,29 @@
     </node>    
 
     <!-- Start the pose stamped transformer node -->
-    <node name="aruco_posestamped_nightray_toglobal" pkg="unity_ros_tf" type="posestamped_transformer.py" output="screen">
-        <param name="parent_frame"  value="multijackal_02/map" /> 
+    <node name="toglobal_aruco_posestamped_nightray" pkg="unity_ros_tf" type="posestamped_transformer.py" output="screen">
+        <param name="parent_frame"  value="map" /> 
         <param name="child_frame" value="multijackal_02/map" /> 
         <remap from="/local_topic" to="/multijackal_02/viz_panel_pose"/> 
         <remap from="/global_topic" to="/global/viz_panel_pose"/>      
+        <remap from="/tf" to="/multijackal_01/merged/tf"/> 
+        <remap from="/tf_static" to="/multijackal_01/merged/tf_static"/>          
+    </node>    
+
+    <node name="toglobal_aruco_posestamped_minijoey" pkg="unity_ros_tf" type="posestamped_transformer.py" output="screen">
+        <param name="parent_frame"  value="map" /> 
+        <param name="child_frame" value="multijackal_01/map" /> 
+        <remap from="/local_topic" to="/multijackal_01/ghost_aruco_posestamped_relay"/> 
+        <remap from="/global_topic" to="/global/ghost_aruco_posestamped_relay"/>      
+        <remap from="/tf" to="/multijackal_01/merged/tf"/> 
+        <remap from="/tf_static" to="/multijackal_01/merged/tf_static"/>          
+    </node>    
+
+    <node name="toglobal_lowobstacle" pkg="unity_ros_tf" type="posestamped_transformer.py" output="screen">
+        <param name="parent_frame"  value="map" /> 
+        <param name="child_frame" value="multijackal_02/map" /> 
+        <remap from="/local_topic" to="/multijackal_02/low_obstacle_pose"/> 
+        <remap from="/global_topic" to="/global/low_obstacle_pose"/>      
         <remap from="/tf" to="/multijackal_01/merged/tf"/> 
         <remap from="/tf_static" to="/multijackal_01/merged/tf_static"/>          
     </node>    
@@ -28,7 +46,7 @@
     <!--/human_localization_odom    :HL2 publish relative transfrom from QR code to HL camera-->  
     <!-- <param name="parent_frame"  value="multijackal_09/map" />  -->
 
-    <!-- <node name="odometry_transformer_robot_1_toglobal" pkg="unity_ros_tf" type="odometry_fromodom_transformer.py" output="screen">
+    <node name="toglobal_odometry_transformer_robot_1" pkg="unity_ros_tf" type="odometry_fromodom_transformer.py" output="screen">
         <param name="parent_frame"  value="map" /> 
         <param name="child_frame" value="multijackal_01/odom" /> 
         <param name="z_offset_human" value="0.0" />
@@ -44,13 +62,36 @@
     </node>
 
 
-    <node name="odometry_transformer_robot_2_toglobal" pkg="unity_ros_tf" type="odometry_fromodom_transformer.py" output="screen">
+    <node name="toglobal_odometry_transformer_robot_2" pkg="unity_ros_tf" type="odometry_fromodom_transformer.py" output="screen">
         <param name="parent_frame"  value="map" /> 
         <param name="child_frame" value="multijackal_02/odom" /> 
         <param name="z_offset_human" value="0.0" />
         <param name="z_offset_floor" value="0.0" />
         <remap from="/odom" to="/multijackal_02/odom"/> 
         <remap from="/global_odom" to="/global/multijackal_02/odom"/> 
+        <remap from="/is_localized" to="/is_localized"/> 
+        <remap from="/human_localization_odom" to="/human_localization_odom"/>     
+        <rosparam param="manual_position_offset">[0.0,0.0,0.0]</rosparam>
+        <rosparam param="manual_orientation_offset">[0.0,0.0,0.0]</rosparam>  
+        <remap from="/tf" to="/multijackal_01/merged/tf"/> 
+        <remap from="/tf_static" to="/multijackal_01/merged/tf_static"/>       
+    </node>
+
+    <node pkg="unity_ros_tf" type="odomfromtf.py" name="toglobal_joey1odom" output="screen">
+        <remap from="/odom_to_map" to="/global/joey1_odom"/>
+        <param name="parent_frame" value="map" />
+        <param name="child_frame" value="joey1/base_footprint" />
+        <remap from="/tf" to="/multijackal_01/merged/tf"/> 
+        <remap from="/tf_static" to="/multijackal_01/merged/tf_static"/>    
+    </node>
+
+    <!-- <node name="toglobal_joey1odom" pkg="unity_ros_tf" type="odometry_fromodom_transformer.py" output="screen">
+        <param name="parent_frame"  value="map" /> 
+        <param name="child_frame" value="joey1/base_footprint" /> 
+        <param name="z_offset_human" value="0.0" />
+        <param name="z_offset_floor" value="0.0" />
+        <remap from="/odom" to="/joey_dummy"/> 
+        <remap from="/global_odom" to="/global/joey1_odom"/> 
         <remap from="/is_localized" to="/is_localized"/> 
         <remap from="/human_localization_odom" to="/human_localization_odom"/>     
         <rosparam param="manual_position_offset">[0.0,0.0,0.0]</rosparam>
@@ -88,7 +129,7 @@
 
     <!-- <node name="occupancy_map_robot2" pkg="unity_ros_tf" type="occupancy_grid_transformer.py" output="screen">
         <param name="parent_frame" value="map" /> 
-        <param name="child_frame" value="multijackal_02/map" /> 
+        <param name="child_frame" value="multijackal_02/merged_map" /> 
         <param name="z_offset_human" value="0.0" />
         <param name="z_offset_floor" value="0.0" />
         <remap from="/robot/map" to="/multijackal_02/map"/> 
@@ -97,11 +138,11 @@
         <remap from="/human_localization_odom" to="/human_localization_odom"/> 
         <rosparam param="manual_position_offset">[0.0,0.0,0.0]</rosparam>
         <rosparam param="manual_orientation_offset">[0.0,0.0,0.0]</rosparam>     
-        <remap from="/tf" to="/multijackal_02/merged/tf"/> 
-        <remap from="/tf_static" to="/multijackal_02/merged/tf_static"/>              
-    </node>
+        <remap from="/tf" to="/multijackal_01/merged/tf"/> 
+        <remap from="/tf_static" to="/multijackal_01/merged/tf_static"/>              
+    </node> -->
 
-    <node name="occupancy_map_robot1" pkg="unity_ros_tf" type="occupancy_grid_transformer.py" output="screen">
+    <!-- <node name="occupancy_map_robot1" pkg="unity_ros_tf" type="occupancy_grid_transformer.py" output="screen">
         <param name="parent_frame" value="map" /> 
         <param name="child_frame" value="multijackal_01/map" /> 
         <param name="z_offset_human" value="0.0" />

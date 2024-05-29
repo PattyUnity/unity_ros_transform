@@ -8,8 +8,11 @@ from sensor_msgs.msg import Image
 import geometry_msgs
 from geometry_msgs.msg import TransformStamped, Transform, PoseStamped
 import tf
+import tf2_ros
 import threading
 import numpy as np
+
+tf_transform = None
 
 def msg_callback(message):
     global global_pub, tf_transform, global_msg
@@ -67,7 +70,7 @@ if __name__ == "__main__":
 
             
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
-            print(e)
+            # print(e)
             continue
 
          
